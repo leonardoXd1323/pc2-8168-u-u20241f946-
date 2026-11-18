@@ -1,162 +1,60 @@
-# Openpay Platform - Settlements API (PC2)
+Openpay Platform - Settlements API (PC2)
+Descripción del proyecto
 
-## Overview
+Openpay Platform es una API REST desarrollada con ASP.NET Core que permite registrar órdenes de desembolso para transferir fondos a tiendas afiliadas. Este proyecto fue desarrollado como parte de la Práctica Calificada 2 (PC2) del curso Aplicaciones Web.
 
-**Openpay Platform** is an ASP.NET Core RESTful API that supports the **settlement and fund transfer** operations of
-[Openpay Peru](https://www.openpay.pe/), the payment gateway and technology platform of the BBVA group.
+La API cuenta con un endpoint principal que permite registrar órdenes de desembolso, validando los datos recibidos y aplicando las reglas de negocio correspondientes.
 
-The API lets an operator register **Disbursement Orders**: instructions to transfer funds to an affiliate store within
-a scheduled date interval. In this practical test the API exposes a single operation (`POST`) on the
-`/api/v1/disbursement-orders` endpoint, and applies every business rule of the case.
+Datos del estudiante
 
-## Author
+Nombre: Sebastian Lopez
+Código: U20241F946
+Curso: Aplicaciones Web (1ASI0730)
+NRC: 8168
+Evaluación: Práctica Calificada 2 (PC2)
 
-| Field | Value |
-|-------|-------|
-| **Name** | Sebastian Lopez |
-| **Student code** | U20241F946 |
-| **Course** | Aplicaciones Web (1ASI0730) |
-| **NRC** | 8168 |
-| **Assessment** | Practical Test 2 (PC2) |
-| **Solution** | `pc28168u20241f946` |
-| **Project** | `PC28168.U20241F946.Openpay.Platform` |
+Tecnologías utilizadas
 
-## Technologies
+Para el desarrollo del proyecto se utilizó C# con .NET 10 y ASP.NET Core. También se implementó Entity Framework Core para trabajar con la base de datos MySQL.
 
-- C# 14 and .NET 10 with ASP.NET Core (controllers)
-- Entity Framework Core 10 with MySQL (`MySql.EntityFrameworkCore`), schema `openpay_settlements`
-- Built-in OpenAPI document generation and [Scalar](https://scalar.com/) as interactive documentation
-- Localization with `.resx` resources (`en`, `en-US`, `es`, `es-PE`)
-- Humanizer for pluralization of table names
+Además, se utilizó OpenAPI y Scalar para documentar y probar los endpoints de la API. El proyecto también cuenta con soporte para varios idiomas, como inglés y español.
 
-## Architecture
+Funcionamiento del proyecto
 
-The solution follows **Domain-Driven Design** with a **layered architecture** inside every bounded context, the
-**CQRS** pattern (commands handled by command services), **resources** and **assemblers** for the REST contracts.
+El sistema permite registrar órdenes de desembolso mediante una solicitud POST al endpoint /api/v1/disbursement-orders.
 
-```
-PC28168.U20241F946.Openpay.Platform
-|-- Settlements                  Core business bounded context
-|   |-- Domain                   Aggregate, value objects, commands, repository contracts
-|   |-- Application              Command service, application errors
-|   |-- Infrastructure           EF Core repository
-|   `-- Interfaces/REST          Controller, resources, assemblers
-|-- Shared                       Base elements reused by other bounded contexts
-|   |-- Domain                   IAuditableEntity, IBaseRepository, IUnitOfWork, DateInterval, FinancialAmount
-|   |-- Application              Result<TValue, TError> pattern
-|   `-- Infrastructure           AppDbContext, BaseRepository, UnitOfWork, interceptor, naming conventions
-`-- Resources                    Localized messages (SharedResource.*.resx)
-```
+Para registrar una orden se deben enviar datos como el código de seguimiento, el identificador de la tienda afiliada, las fechas de programación, el monto máximo de transferencia, la moneda y el usuario responsable.
 
-| Bounded context | Contents |
-|-----------------|----------|
-| `Settlements` | `DisbursementOrder` (aggregate root), `OpenpayReference`, `StoreIdentifier`, `DisbursementStatus` |
-| `Shared` | `DateInterval`, `FinancialAmount`, auditing, repository base, unit of work, naming conventions |
+El sistema valida que los datos sean correctos antes de guardar la información en la base de datos. También verifica que las fechas sean válidas, que el monto no sea negativo y que el código de seguimiento no esté registrado anteriormente.
 
-More details: [`docs/class-diagram.puml`](docs/class-diagram.puml) and
-[`docs/business-rules.md`](docs/business-rules.md) (traceability of every business rule to the code).
+Cada orden registrada recibe un identificador generado automáticamente. Por defecto, su estado inicial es Queued.
 
-## Domain model
+Estados de las órdenes
 
-`DisbursementOrder` (aggregate root, auditable)
+Las órdenes de desembolso pueden tener diferentes estados dependiendo de su situación. Estos son Queued, Processed, Cancelled y Failed, que representan una orden pendiente, procesada, cancelada o fallida.
 
-| Attribute | Type | Rules |
-|-----------|------|-------|
-| `Id` | `int` | Auto-generated primary key |
-| `OrderTrackingCode` | `OpenpayReference` (`Guid`) | Required. Must be unique |
-| `AffiliateStoreId` | `StoreIdentifier` (`Guid`) | Required |
-| `ExecutionSchedule` | `DateInterval` | `ScheduledTo` must be later than `ScheduledFrom`. `HasElapsed(referenceDate)` |
-| `TransferCap` | `FinancialAmount` | `Amount >= 0`, `CurrencyCode` not null/blank, `MultiplyBy(factor)` |
-| `Status` | `DisbursementStatus` | `Queued = 10` (default), `Processed = 11`, `Cancelled = 12`, `Failed = 13` |
-| `User` | `string` | Required, not blank, max 20 characters |
-| `Remarks` | `string` | Optional, max 85 characters |
-| `CreatedAt` / `UpdatedAt` | `DateTimeOffset?` | Managed by the persistence layer (auditing) |
+Base de datos
 
-## Endpoint
+El proyecto utiliza MySQL para almacenar la información. La base de datos se llama openpay_settlements y contiene la tabla disbursement_orders, donde se guardan las órdenes registradas.
 
-### `POST /api/v1/disbursement-orders`
+También se implementó una validación para evitar que se registren dos órdenes con el mismo código de seguimiento.
 
-Registers a disbursement order. The `id` is generated when the order is stored. Value objects are received as
-separated primitive values.
+Ejecución del proyecto
 
-Request body:
+Para ejecutar el proyecto es necesario tener instalado .NET 10 SDK y contar con un servidor MySQL activo.
 
-```json
-{
-  "orderTrackingCode": "3f2b8c1e-5d47-4a9b-9c3e-1a2b3c4d5e6f",
-  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
-  "scheduledFrom": "2026-12-01",
-  "scheduledTo": "2026-12-15",
-  "transferCapAmount": 1500.50,
-  "transferCapCurrencyCode": "PEN",
-  "status": "Queued",
-  "user": "operator01",
-  "remarks": "First settlement of December"
-}
-```
+Primero se debe configurar la conexión a la base de datos en el archivo appsettings.Development.json. Luego se puede iniciar la API utilizando el siguiente comando:
 
-`status` and `remarks` are optional. When `status` is omitted the order is stored as `Queued`.
+bash
+dotnet run --project PC28168.U20241F946.Openpay.Platform
 
-Successful response (`201 Created`):
 
-```json
-{
-  "id": 1,
-  "orderTrackingCode": "3f2b8c1e-5d47-4a9b-9c3e-1a2b3c4d5e6f",
-  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
-  "scheduledFrom": "2026-12-01",
-  "scheduledTo": "2026-12-15",
-  "transferCapAmount": 1500.50,
-  "transferCapCurrencyCode": "PEN",
-  "status": "Queued",
-  "user": "operator01",
-  "remarks": "First settlement of December",
-  "updatedAt": "2026-11-18T16:20:31.4120000+00:00"
-}
-```
+Una vez iniciada la aplicación, se puede acceder a la documentación interactiva mediante la siguiente dirección:
 
-Error response (`application/problem+json`, example with `Accept-Language: en`):
+http://localhost:5128/scalar
 
-```json
-{
-  "title": "The request contains invalid values.",
-  "status": 400,
-  "detail": "Scheduled to must be a valid date (yyyy-MM-dd) later than scheduled from."
-}
-```
+Desde allí es posible revisar y probar el funcionamiento del endpoint y sus diferentes respuestas.
 
-| HTTP status | Meaning |
-|-------------|---------|
-| `201 Created` | The order was created. The body contains the order, its generated `id` and `updatedAt` |
-| `400 Bad Request` | A value is missing, malformed or breaks a business rule |
-| `409 Conflict` | An order with the same `orderTrackingCode` already exists |
-| `500 Internal Server Error` | Unexpected error |
+Conclusión
 
-### Localization (i18n)
-
-Error and validation messages follow the `Accept-Language` request header. Supported cultures: `en`, `en-US`
-(default), `es` and `es-PE`. The OpenAPI documentation is always written in English.
-
-## Database
-
-- Engine: MySQL. Schema: `openpay_settlements`.
-- Table `disbursement_orders` (plural, `snake_case`, primary key `id`). The schema and the table are created on startup.
-- Unique index on `order_tracking_code`: duplicates are rejected by the application and by the database.
-
-## How to run
-
-1. Install the **.NET 10 SDK** and start a **MySQL** server.
-2. Adjust the connection string in `PC28168.U20241F946.Openpay.Platform/appsettings.Development.json`
-   (database `openpay_settlements`).
-3. Run the API:
-
-   ```bash
-   dotnet run --project PC28168.U20241F946.Openpay.Platform
-   ```
-
-4. Open `http://localhost:5128/scalar` to explore the API, or use the requests of the
-   `PC28168.U20241F946.Openpay.Platform.http` file (it covers the success case and every error case).
-
-## Scope
-
-Out of scope for this practical test: CORS support, security and testing.
+Este proyecto permite aplicar los conocimientos adquiridos durante el curso mediante el desarrollo de una API REST utilizando .NET, C# y MySQL. Se implementaron reglas de negocio, validaciones, almacenamiento de información y documentación de los servicios, siguiendo una arquitectura organizada por capas.
