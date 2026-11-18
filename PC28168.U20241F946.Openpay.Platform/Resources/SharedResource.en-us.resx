@@ -1,0 +1,102 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="UnexpectedServerError" xml:space="preserve">
+        <value>Unexpected server error</value>
+    </data>
+    <data name="UnexpectedErrorCreatingDisbursementOrder" xml:space="preserve">
+        <value>An unexpected error occurred while creating the disbursement order.</value>
+    </data>
+    <data name="UnexpectedErrorProcessingRequest" xml:space="preserve">
+        <value>An unexpected error occurred while processing your request.</value>
+    </data>
+    <data name="InvalidModelStateTitle" xml:space="preserve">
+        <value>The request contains invalid values.</value>
+    </data>
+    <data name="InvalidDisbursementOrderRequest" xml:space="preserve">
+        <value>The disbursement order request contains invalid values.</value>
+    </data>
+    <data name="DisbursementOrderDuplicatedTitle" xml:space="preserve">
+        <value>Duplicated disbursement order</value>
+    </data>
+    <data name="DisbursementOrderDuplicated" xml:space="preserve">
+        <value>A disbursement order with this order tracking code already exists.</value>
+    </data>
+    <data name="RequiredOrderTrackingCode" xml:space="preserve">
+        <value>Order tracking code is required.</value>
+    </data>
+    <data name="RequiredAffiliateStoreId" xml:space="preserve">
+        <value>Affiliate store ID is required.</value>
+    </data>
+    <data name="RequiredScheduledFrom" xml:space="preserve">
+        <value>Scheduled from date is required.</value>
+    </data>
+    <data name="RequiredScheduledTo" xml:space="preserve">
+        <value>Scheduled to date is required.</value>
+    </data>
+    <data name="RequiredTransferCapAmount" xml:space="preserve">
+        <value>Transfer cap amount is required.</value>
+    </data>
+    <data name="RequiredTransferCapCurrencyCode" xml:space="preserve">
+        <value>Transfer cap currency code is required.</value>
+    </data>
+    <data name="RequiredUser" xml:space="preserve">
+        <value>User is required.</value>
+    </data>
+    <data name="ArgumentException.OrderTrackingCode" xml:space="preserve">
+        <value>Order tracking code must be a valid GUID.</value>
+    </data>
+    <data name="ArgumentException.AffiliateStoreId" xml:space="preserve">
+        <value>Affiliate store ID must be a valid GUID.</value>
+    </data>
+    <data name="ArgumentException.ScheduledFrom" xml:space="preserve">
+        <value>Scheduled from must be a valid date (yyyy-MM-dd).</value>
+    </data>
+    <data name="ArgumentException.ScheduledTo" xml:space="preserve">
+        <value>Scheduled to must be a valid date (yyyy-MM-dd) later than scheduled from.</value>
+    </data>
+    <data name="ArgumentException.TransferCapAmount" xml:space="preserve">
+        <value>Transfer cap amount is required.</value>
+    </data>
+    <data name="ArgumentException.Status" xml:space="preserve">
+        <value>Status must be one of: Queued, Processed, Cancelled, Failed.</value>
+    </data>
+    <data name="ArgumentException.CurrencyCode" xml:space="preserve">
+        <value>Currency code cannot be empty or whitespace.</value>
+    </data>
+    <data name="ArgumentException.User" xml:space="preserve">
+        <value>User cannot be empty or whitespace.</value>
+    </data>
+    <data name="ArgumentNullException.CurrencyCode" xml:space="preserve">
+        <value>Currency code cannot be null.</value>
+    </data>
+    <data name="ArgumentNullException.User" xml:space="preserve">
+        <value>User cannot be null.</value>
+    </data>
+    <data name="ArgumentOutOfRangeException.Amount" xml:space="preserve">
+        <value>Transfer cap amount must be greater than or equal to zero.</value>
+    </data>
+    <data name="ArgumentOutOfRangeException.User" xml:space="preserve">
+        <value>User cannot be longer than 20 characters.</value>
+    </data>
+    <data name="ArgumentOutOfRangeException.Remarks" xml:space="preserve">
+        <value>Remarks cannot be longer than 85 characters.</value>
+    </data>
+    <data name="ArgumentOutOfRangeException.Status" xml:space="preserve">
+        <value>Status must be one of: Queued, Processed, Cancelled, Failed.</value>
+    </data>
+</root>

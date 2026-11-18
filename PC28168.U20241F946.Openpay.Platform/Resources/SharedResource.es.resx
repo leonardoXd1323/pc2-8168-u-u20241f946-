@@ -1,0 +1,102 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="UnexpectedServerError" xml:space="preserve">
+        <value>Error inesperado del servidor</value>
+    </data>
+    <data name="UnexpectedErrorCreatingDisbursementOrder" xml:space="preserve">
+        <value>Ocurrió un error inesperado al crear la orden de desembolso.</value>
+    </data>
+    <data name="UnexpectedErrorProcessingRequest" xml:space="preserve">
+        <value>Ocurrió un error inesperado al procesar su solicitud.</value>
+    </data>
+    <data name="InvalidModelStateTitle" xml:space="preserve">
+        <value>La solicitud contiene valores inválidos.</value>
+    </data>
+    <data name="InvalidDisbursementOrderRequest" xml:space="preserve">
+        <value>La solicitud de la orden de desembolso contiene valores inválidos.</value>
+    </data>
+    <data name="DisbursementOrderDuplicatedTitle" xml:space="preserve">
+        <value>Orden de desembolso duplicada</value>
+    </data>
+    <data name="DisbursementOrderDuplicated" xml:space="preserve">
+        <value>Ya existe una orden de desembolso con este código de seguimiento.</value>
+    </data>
+    <data name="RequiredOrderTrackingCode" xml:space="preserve">
+        <value>El código de seguimiento de la orden es obligatorio.</value>
+    </data>
+    <data name="RequiredAffiliateStoreId" xml:space="preserve">
+        <value>El ID del comercio afiliado es obligatorio.</value>
+    </data>
+    <data name="RequiredScheduledFrom" xml:space="preserve">
+        <value>La fecha de inicio programada es obligatoria.</value>
+    </data>
+    <data name="RequiredScheduledTo" xml:space="preserve">
+        <value>La fecha de fin programada es obligatoria.</value>
+    </data>
+    <data name="RequiredTransferCapAmount" xml:space="preserve">
+        <value>El monto tope de transferencia es obligatorio.</value>
+    </data>
+    <data name="RequiredTransferCapCurrencyCode" xml:space="preserve">
+        <value>El código de moneda del tope de transferencia es obligatorio.</value>
+    </data>
+    <data name="RequiredUser" xml:space="preserve">
+        <value>El usuario es obligatorio.</value>
+    </data>
+    <data name="ArgumentException.OrderTrackingCode" xml:space="preserve">
+        <value>El código de seguimiento de la orden debe ser un GUID válido.</value>
+    </data>
+    <data name="ArgumentException.AffiliateStoreId" xml:space="preserve">
+        <value>El ID del comercio afiliado debe ser un GUID válido.</value>
+    </data>
+    <data name="ArgumentException.ScheduledFrom" xml:space="preserve">
+        <value>La fecha de inicio programada debe ser una fecha válida (yyyy-MM-dd).</value>
+    </data>
+    <data name="ArgumentException.ScheduledTo" xml:space="preserve">
+        <value>La fecha de fin programada debe ser una fecha válida (yyyy-MM-dd) posterior a la fecha de inicio.</value>
+    </data>
+    <data name="ArgumentException.TransferCapAmount" xml:space="preserve">
+        <value>El monto tope de transferencia es obligatorio.</value>
+    </data>
+    <data name="ArgumentException.Status" xml:space="preserve">
+        <value>El estado debe ser uno de: Queued, Processed, Cancelled, Failed.</value>
+    </data>
+    <data name="ArgumentException.CurrencyCode" xml:space="preserve">
+        <value>El código de moneda no puede estar vacío ni contener solo espacios.</value>
+    </data>
+    <data name="ArgumentException.User" xml:space="preserve">
+        <value>El usuario no puede estar vacío ni contener solo espacios.</value>
+    </data>
+    <data name="ArgumentNullException.CurrencyCode" xml:space="preserve">
+        <value>El código de moneda no puede ser nulo.</value>
+    </data>
+    <data name="ArgumentNullException.User" xml:space="preserve">
+        <value>El usuario no puede ser nulo.</value>
+    </data>
+    <data name="ArgumentOutOfRangeException.Amount" xml:space="preserve">
+        <value>El monto tope de transferencia debe ser mayor o igual a cero.</value>
+    </data>
+    <data name="ArgumentOutOfRangeException.User" xml:space="preserve">
+        <value>El usuario no puede exceder los 20 caracteres.</value>
+    </data>
+    <data name="ArgumentOutOfRangeException.Remarks" xml:space="preserve">
+        <value>Las observaciones no pueden exceder los 85 caracteres.</value>
+    </data>
+    <data name="ArgumentOutOfRangeException.Status" xml:space="preserve">
+        <value>El estado debe ser uno de: Queued, Processed, Cancelled, Failed.</value>
+    </data>
+</root>

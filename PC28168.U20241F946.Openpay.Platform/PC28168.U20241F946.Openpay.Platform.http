@@ -1,0 +1,155 @@
+@HostAddress = http://localhost:5128
+
+### Create a disbursement order (English messages) -> 201 Created
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: en
+
+{
+  "orderTrackingCode": "3f2b8c1e-5d47-4a9b-9c3e-1a2b3c4d5e6f",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-15",
+  "transferCapAmount": 1500.50,
+  "transferCapCurrencyCode": "PEN",
+  "status": "Queued",
+  "user": "operator01",
+  "remarks": "First settlement of December"
+}
+
+### Same order tracking code again -> 409 Conflict (Spanish messages)
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: es-PE
+
+{
+  "orderTrackingCode": "3f2b8c1e-5d47-4a9b-9c3e-1a2b3c4d5e6f",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-15",
+  "transferCapAmount": 1500.50,
+  "transferCapCurrencyCode": "PEN",
+  "user": "operator01"
+}
+
+### Status omitted -> 201 Created with status Queued
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: en-US
+
+{
+  "orderTrackingCode": "a1b2c3d4-0000-4000-8000-000000000001",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-10",
+  "transferCapAmount": 250,
+  "transferCapCurrencyCode": "USD",
+  "user": "operator02"
+}
+
+### scheduledTo <= scheduledFrom -> 400 Bad Request
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: es
+
+{
+  "orderTrackingCode": "11111111-2222-4333-8444-555555555555",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-15",
+  "scheduledTo": "2026-12-01",
+  "transferCapAmount": 100,
+  "transferCapCurrencyCode": "PEN",
+  "user": "operator01"
+}
+
+### Negative transfer cap amount -> 400 Bad Request
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: en
+
+{
+  "orderTrackingCode": "a1b2c3d4-0000-4000-8000-000000000002",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-10",
+  "transferCapAmount": -5,
+  "transferCapCurrencyCode": "PEN",
+  "user": "operator01"
+}
+
+### Blank currency code -> 400 Bad Request
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: en
+
+{
+  "orderTrackingCode": "a1b2c3d4-0000-4000-8000-000000000003",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-10",
+  "transferCapAmount": 10,
+  "transferCapCurrencyCode": " ",
+  "user": "operator01"
+}
+
+### Unknown status -> 400 Bad Request
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: en
+
+{
+  "orderTrackingCode": "a1b2c3d4-0000-4000-8000-000000000004",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-10",
+  "transferCapAmount": 10,
+  "transferCapCurrencyCode": "PEN",
+  "status": "Unknown",
+  "user": "operator01"
+}
+
+### User longer than 20 characters -> 400 Bad Request
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: en
+
+{
+  "orderTrackingCode": "a1b2c3d4-0000-4000-8000-000000000005",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-10",
+  "transferCapAmount": 10,
+  "transferCapCurrencyCode": "PEN",
+  "user": "operator-with-a-very-long-name"
+}
+
+### Remarks longer than 85 characters -> 400 Bad Request
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: en
+
+{
+  "orderTrackingCode": "a1b2c3d4-0000-4000-8000-000000000006",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-10",
+  "transferCapAmount": 10,
+  "transferCapCurrencyCode": "PEN",
+  "user": "operator01",
+  "remarks": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+
+### Invalid order tracking code (not a GUID) -> 400 Bad Request
+POST {{HostAddress}}/api/v1/disbursement-orders
+Content-Type: application/json
+Accept-Language: es-PE
+
+{
+  "orderTrackingCode": "not-a-guid",
+  "affiliateStoreId": "9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d",
+  "scheduledFrom": "2026-12-01",
+  "scheduledTo": "2026-12-10",
+  "transferCapAmount": 10,
+  "transferCapCurrencyCode": "PEN",
+  "user": "operator01"
+}

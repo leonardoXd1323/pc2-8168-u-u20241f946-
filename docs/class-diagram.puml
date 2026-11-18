@@ -1,0 +1,136 @@
+@startuml
+' Openpay Platform - Settlements class diagram (Author: Sebastian Lopez - U20241F946)
+skinparam classAttributeIconSize 0
+
+package "Settlements" {
+  package "Interfaces.REST" {
+    class DisbursementOrdersController {
+      +CreateDisbursementOrder(CreateDisbursementOrderResource, CancellationToken) : Task<ActionResult>
+    }
+    class CreateDisbursementOrderResource <<resource>> {
+      +string OrderTrackingCode
+      +string AffiliateStoreId
+      +string ScheduledFrom
+      +string ScheduledTo
+      +decimal? TransferCapAmount
+      +string TransferCapCurrencyCode
+      +string? Status
+      +string User
+      +string? Remarks
+    }
+    class DisbursementOrderResource <<resource>> {
+      +int Id
+      +string OrderTrackingCode
+      +string AffiliateStoreId
+      +string ScheduledFrom
+      +string ScheduledTo
+      +decimal TransferCapAmount
+      +string TransferCapCurrencyCode
+      +string Status
+      +string User
+      +string? Remarks
+      +DateTimeOffset? UpdatedAt
+    }
+    class CreateDisbursementOrderCommandFromResourceAssembler <<assembler>>
+    class DisbursementOrderResourceFromEntityAssembler <<assembler>>
+    class ActionResultFromCreateDisbursementOrderResultAssembler <<assembler>>
+    class ValidationErrorMessageAssembler <<assembler>>
+  }
+
+  package "Application" {
+    interface IDisbursementOrderCommandService {
+      +Handle(CreateDisbursementOrderCommand, CancellationToken) : Task<Result<DisbursementOrder, CreateDisbursementOrderError>>
+    }
+    class DisbursementOrderCommandService
+    enum CreateDisbursementOrderError {
+      DuplicateOrderTrackingCode
+      UnexpectedError
+    }
+  }
+
+  package "Domain" {
+    class DisbursementOrder <<aggregate root>> {
+      +int Id
+      +OpenpayReference OrderTrackingCode
+      +StoreIdentifier AffiliateStoreId
+      +DateInterval ExecutionSchedule
+      +FinancialAmount TransferCap
+      +DisbursementStatus Status
+      +string User
+      +string? Remarks
+      +DateTimeOffset? CreatedAt
+      +DateTimeOffset? UpdatedAt
+    }
+    class CreateDisbursementOrderCommand <<command>>
+    class OpenpayReference <<value object>> {
+      +Guid Value
+    }
+    class StoreIdentifier <<value object>> {
+      +Guid Value
+    }
+    enum DisbursementStatus {
+      Queued = 10
+      Processed = 11
+      Cancelled = 12
+      Failed = 13
+    }
+    interface IDisbursementOrderRepository {
+      +FindByOrderTrackingCodeAsync(OpenpayReference, CancellationToken) : Task<DisbursementOrder?>
+    }
+  }
+
+  package "Infrastructure" {
+    class DisbursementOrderRepository
+  }
+}
+
+package "Shared" {
+  class DateInterval <<value object>> {
+    +DateOnly ScheduledFrom
+    +DateOnly ScheduledTo
+    +HasElapsed(DateOnly) : bool
+  }
+  class FinancialAmount <<value object>> {
+    +decimal Amount
+    +string CurrencyCode
+    +MultiplyBy(decimal) : FinancialAmount
+  }
+  interface IAuditableEntity
+  interface IBaseRepository<TEntity>
+  interface IUnitOfWork
+  class BaseRepository<TEntity>
+  class UnitOfWork
+  class AppDbContext
+  class AuditableEntityInterceptor
+  abstract class "Result<TValue, TError>" as Result
+}
+
+DisbursementOrdersController --> IDisbursementOrderCommandService
+DisbursementOrdersController ..> CreateDisbursementOrderResource
+DisbursementOrdersController ..> DisbursementOrderResource
+DisbursementOrdersController ..> CreateDisbursementOrderCommandFromResourceAssembler
+DisbursementOrdersController ..> ActionResultFromCreateDisbursementOrderResultAssembler
+DisbursementOrdersController ..> ValidationErrorMessageAssembler
+ActionResultFromCreateDisbursementOrderResultAssembler ..> DisbursementOrderResourceFromEntityAssembler
+DisbursementOrderCommandService ..|> IDisbursementOrderCommandService
+DisbursementOrderCommandService --> IDisbursementOrderRepository
+DisbursementOrderCommandService --> IUnitOfWork
+DisbursementOrderCommandService ..> Result
+DisbursementOrderCommandService ..> CreateDisbursementOrderError
+DisbursementOrderCommandService ..> CreateDisbursementOrderCommand
+IDisbursementOrderRepository --|> IBaseRepository
+DisbursementOrderRepository ..|> IDisbursementOrderRepository
+DisbursementOrderRepository --|> BaseRepository
+BaseRepository ..|> IBaseRepository
+BaseRepository --> AppDbContext
+UnitOfWork ..|> IUnitOfWork
+UnitOfWork --> AppDbContext
+AppDbContext ..> AuditableEntityInterceptor
+DisbursementOrder ..|> IAuditableEntity
+DisbursementOrder *-- OpenpayReference
+DisbursementOrder *-- StoreIdentifier
+DisbursementOrder *-- DateInterval
+DisbursementOrder *-- FinancialAmount
+DisbursementOrder --> DisbursementStatus
+CreateDisbursementOrderCommand ..> DisbursementOrder
+@enduml
