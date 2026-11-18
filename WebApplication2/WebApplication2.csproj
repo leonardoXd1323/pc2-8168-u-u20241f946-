@@ -11,7 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="src\shared\" />
+      <Folder Include="src\shared\infrastucture\" />
+      <Folder Include="src\shared\presenteshion\componets\" />
     </ItemGroup>
 
 </Project>
